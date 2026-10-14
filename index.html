@@ -1,476 +1,612 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 전세계 가성비 여행 가이드</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
-        body { font-family: 'Pretendard', sans-serif; transition: background-color 0.3s; }
-        .loading-shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        .category-btn.active {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .scale-in { animation: scaleIn 0.3s ease-out; }
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>도약 CMF 큐브 · 실물 사양</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --ink:#1c1d20; --sub:#5d6066; --line:rgba(0,0,0,.12);
+  --panel:rgba(236,236,233,.86); --chip:rgba(255,255,255,.6); --chipOn:#1c1d20; --chipOnInk:#f1f1ee;
+  --cold:#3e5a8a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e4e3df; --sub:#9a9ca1; --line:rgba(255,255,255,.12);
+    --panel:rgba(22,23,26,.82); --chip:rgba(255,255,255,.05); --chipOn:#e6eeff; --chipOnInk:#15161a;
+    --cold:#bcd0f5;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e4e3df; --sub:#9a9ca1; --line:rgba(255,255,255,.12);
+  --panel:rgba(22,23,26,.82); --chip:rgba(255,255,255,.05); --chipOn:#e6eeff; --chipOnInk:#15161a;
+  --cold:#bcd0f5;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--ink);
+  font-family:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cold);outline-offset:2px}
+
+.top{position:fixed;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 0;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:3}
+.title{pointer-events:auto;min-width:0;flex:1;margin-right:12px;color:#e4e3df;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.light-bg .title{color:#1c1d20;text-shadow:none}
+.light-bg .title span{color:#5d6066}
+.title b{display:block;font-weight:600;font-size:18px;letter-spacing:-.01em}
+.title span{font-size:16px;color:#a8aab0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg{pointer-events:auto;flex:none;display:flex;background:rgba(20,21,24,.7);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:3px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.seg button{white-space:nowrap;border:0;background:none;color:#cfd0d3;padding:6px 14px;border-radius:999px;font-size:16px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:#e6eeff;color:#15161a}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:center;pointer-events:none}
+.sheet{pointer-events:auto;width:100%;max-width:430px;background:var(--panel);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:12px 0 calc(env(safe-area-inset-bottom,0px) + 12px);max-height:62vh;display:flex;flex-direction:column}
+@media (min-width:900px){.dock{justify-content:flex-end;bottom:16px;right:16px;left:auto}.sheet{border-radius:20px;border:1px solid var(--line);width:400px;max-height:calc(100vh - 120px)}}
+.sheet{transition:padding .25s}
+.handle{display:flex;align-items:center;gap:6px;padding:0 10px 10px;touch-action:none;user-select:none}
+.grip{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;cursor:pointer;padding:2px 0;min-height:44px;justify-content:center}
+.grip::before{content:"";width:40px;height:5px;border-radius:3px;background:var(--sub);opacity:.6}
+.grip span{font-size:16px;line-height:1.2}
+.grip small{font-size:14px;color:var(--sub)}
+.nav{border:1px solid var(--line);background:var(--chip);border-radius:12px;width:44px;height:44px;font-size:18px;cursor:pointer;flex:none}
+.sheet .body{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.sheet.collapsed .body{display:none}
+.sheet.collapsed{padding-top:8px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 10px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;scroll-snap-align:start;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--chip);border-radius:14px;padding:8px 12px 8px 8px;cursor:pointer;text-align:left;min-height:52px}
+.chip i{width:32px;height:32px;border-radius:8px;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.chip span{display:block;font-size:16px;white-space:nowrap;line-height:1.25}
+.chip small{display:block;font-size:13px;color:var(--sub);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--chipOn);color:var(--chipOnInk);border-color:transparent}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.7}
+
+.tabs{display:flex;gap:4px;padding:0 16px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;background:none;padding:8px 10px;font-size:16px;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.pane{overflow-y:auto;padding:12px 16px 4px;-webkit-overflow-scrolling:touch}
+.pane[hidden]{display:none}
+
+.spec h2{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.spec .en{color:var(--sub);font-size:16px;margin:0 0 8px}
+.spec .mat{font-size:16px;margin:0 0 12px}
+.spec dl{margin:0;display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:16px}
+.spec dt{color:var(--sub)}
+.spec dd{margin:0}
+.spec .note{margin:12px 0 4px;font-size:16px;color:var(--sub);border-left:2px solid var(--cold);padding-left:10px}
+
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.pill{border:1px solid var(--line);background:var(--chip);border-radius:999px;padding:6px 14px;font-size:16px;cursor:pointer;min-height:38px}
+.pill[aria-pressed="true"]{background:var(--chipOn);color:var(--chipOnInk);border-color:transparent}
+.grp{font-size:14px;color:var(--sub);margin:4px 0 6px}
+.sl{display:grid;grid-template-columns:96px 1fr 44px;align-items:center;gap:10px;margin:6px 0}
+.sl label{font-size:16px}
+.sl output{font-size:14px;color:var(--sub);text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--cold);height:28px}
+
+#load{position:fixed;inset:0;display:grid;place-items:center;color:#9a9ca1;font-size:16px;z-index:9;background:#000;transition:opacity .6s}
+#load.done{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion: reduce){#load{transition:none}}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body>
+<canvas id="c" aria-label="CMF 3D 정육면체 뷰어"></canvas>
+<div id="load">표면 맵을 생성하는 중…</div>
 
-    <!-- 헤더 -->
-    <header class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50 px-4 py-3 shadow-sm">
-        <div class="max-w-md mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 p-1.5 rounded-lg shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                </div>
-                <h1 class="font-bold text-lg tracking-tight">Travel AI <span class="text-[10px] bg-blue-100 text-blue-600 px-1 rounded ml-1">v2.0</span></h1>
-            </div>
-            <div class="flex gap-1">
-                <button onclick="toggleSettings()" class="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </button>
-                <button onclick="refreshLocation()" class="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
-                </button>
-            </div>
-        </div>
-    </header>
+<header class="top">
+  <div class="title"><b>도약 CMF 큐브 · 실물 사양</b><span id="hdrSub">01 도약선 아노다이즈</span></div>
+  <div class="seg" role="group" aria-label="보기 모드">
+    <button id="mSingle" aria-pressed="true">단일</button>
+    <button id="mGrid" aria-pressed="false">8종 비교</button>
+  </div>
+</header>
 
-    <main class="max-w-md mx-auto p-4 pb-32">
-        
-        <!-- API 설정 패널 -->
-        <div id="settings-panel" class="hidden bg-white border border-gray-200 rounded-3xl p-6 mb-6 shadow-xl space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-            <div>
-                <h2 class="font-bold flex items-center gap-2 text-gray-800 mb-2">💎 Gemini API</h2>
-                <input type="password" id="gemini-key-input" placeholder="Gemini API 키 입력" 
-                       class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-2">
-                <button onclick="window.open('https://aistudio.google.com/app/apikey', '_blank')" class="text-xs text-blue-600 font-bold underline">키가 없으신가요? 발급받기</button>
-            </div>
-
-            <div>
-                <h2 class="font-bold flex items-center gap-2 text-gray-800 mb-2">🗺️ Google Maps API</h2>
-                <input type="password" id="google-key-input" placeholder="Google Maps API 키 입력" 
-                       class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-2">
-                <button onclick="window.open('https://console.cloud.google.com/google/maps-apis/credentials', '_blank')" class="text-xs text-blue-600 font-bold underline">키 발급/확인하러 가기 (Places API 활성화 필수)</button>
-            </div>
-
-            <button onclick="saveAllKeys()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl active:scale-95 transition-all shadow-lg">설정 저장 및 적용</button>
-        </div>
-
-        <!-- 위치 상태 정보 -->
-        <div id="location-status" class="bg-white border border-gray-100 rounded-2xl p-4 mb-6 shadow-sm flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div id="status-dot" class="animate-pulse bg-amber-400 w-2.5 h-2.5 rounded-full"></div>
-                    <p id="status-text" class="text-sm text-gray-700 font-semibold">위치를 확인하는 중입니다...</p>
-                </div>
-                <span id="secure-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-gray-100">CHECKING...</span>
-            </div>
-            <p id="error-hint" class="text-xs text-red-500 hidden leading-relaxed font-medium"></p>
-        </div>
-
-        <!-- 카테고리 선택 영역 -->
-        <div class="mb-8">
-            <h2 class="text-xs font-bold text-gray-400 mb-3 px-1 uppercase tracking-widest">추천 카테고리</h2>
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                <button onclick="selectCategory('전체', this)" class="category-btn active shrink-0 px-5 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-bold transition-all shadow-sm">전체</button>
-                <button onclick="selectCategory('음식점', this)" class="category-btn shrink-0 px-5 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-bold transition-all shadow-sm">🍽️ 음식점</button>
-                <button onclick="selectCategory('관광명소', this)" class="category-btn shrink-0 px-5 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-bold transition-all shadow-sm">🏛️ 관광지</button>
-                <button onclick="selectCategory('공원', this)" class="category-btn shrink-0 px-5 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-bold transition-all shadow-sm">🌳 산책/공원</button>
-                <button onclick="selectCategory('카페', this)" class="category-btn shrink-0 px-5 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-bold transition-all shadow-sm">☕ 카페</button>
-            </div>
-        </div>
-
-        <!-- 실행 버튼 -->
-        <button id="main-btn" disabled 
-                onclick="startProcess()"
-                class="w-full bg-blue-600 text-white font-bold py-5 rounded-3xl shadow-xl shadow-blue-200 disabled:bg-gray-200 disabled:shadow-none transition-all active:scale-[0.98] mb-10 flex items-center justify-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            <span id="btn-label">주변 정보 분석 시작</span>
-        </button>
-
-        <!-- 결과 표시 영역 -->
-        <div id="results-container" class="space-y-6">
-            <div id="empty-state" class="text-center py-16">
-                <div class="bg-gray-100 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-6 rotate-6 shadow-inner">
-                    <span class="text-4xl">📍</span>
-                </div>
-                <p class="text-gray-500 font-bold text-lg leading-tight">준비 완료!<br><span class="text-sm font-medium text-gray-400 italic">API 키를 설정하고 위치 권한을 확인해 주세요.</span></p>
-                <p id="key-check-warning" class="text-xs text-red-500 mt-4 hidden font-bold">⚠️ API 키 설정이 필요합니다 (우측 상단 ⚙️)</p>
-            </div>
-        </div>
-
-        <!-- 스켈레톤 UI -->
-        <div id="skeleton" class="hidden space-y-6">
-            <div class="bg-white rounded-[2.5rem] p-6 border border-gray-100 space-y-4">
-                <div class="loading-shimmer h-6 w-1/2 rounded-full"></div>
-                <div class="loading-shimmer h-32 w-full rounded-3xl"></div>
-                <div class="loading-shimmer h-12 w-full rounded-2xl"></div>
-            </div>
-        </div>
-
-        <!-- AI 대화 인터페이스 -->
-        <div id="ai-chat-area" class="mt-12 pt-8 border-t border-gray-200 hidden">
-            <h2 class="text-xs font-bold text-gray-400 mb-4 px-1 uppercase tracking-widest">AI 여행 컨시어지</h2>
-            <div class="bg-white rounded-3xl p-5 border border-gray-200 shadow-lg space-y-4">
-                <textarea id="chat-input" rows="2" placeholder="예: '방금 추천해 준 곳들 중 가장 조용한 곳이 어디야?'" 
-                          class="w-full p-4 bg-gray-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-medium"></textarea>
-                <div class="flex gap-2">
-                    <button onclick="chatAction('ask')" class="flex-1 bg-gray-900 text-white text-sm font-bold py-4 rounded-2xl active:scale-95 transition-all">질문하기</button>
-                    <button onclick="chatAction('modify')" class="flex-1 bg-blue-50 text-blue-700 text-sm font-bold py-4 rounded-2xl border border-blue-100 active:scale-95 transition-all">수정 요청</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- 에러 모달 -->
-    <div id="error-modal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-xs w-full text-center shadow-2xl scale-in">
-            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            </div>
-            <h3 class="font-bold text-xl mb-3">알림</h3>
-            <p id="error-message" class="text-gray-600 text-sm mb-8 leading-relaxed font-medium"></p>
-            <button onclick="closeModal()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">알겠습니다</button>
-        </div>
+<div class="dock"><section class="sheet" id="sheet">
+  <div class="handle" id="handle">
+    <button class="nav" id="prev" aria-label="이전 소재">‹</button>
+    <button class="grip" id="grip" aria-expanded="true" aria-controls="sheetBody">
+      <span id="gripName">01 도약선 아노다이즈</span><small id="gripHint">탭하거나 아래로 밀어 접기</small>
+    </button>
+    <button class="nav" id="next" aria-label="다음 소재">›</button>
+  </div>
+  <div class="body" id="sheetBody">
+  <div class="chips" id="chips" role="group" aria-label="소재 선택"></div>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-p="pSpec">공정·사양</button>
+    <button role="tab" aria-selected="false" data-p="pFx">효과</button>
+    <button role="tab" aria-selected="false" data-p="pLight">조명·배경</button>
+    <button role="tab" aria-selected="false" data-p="pTune">미세 조정</button>
+  </div>
+  <div class="pane" id="pFx" hidden>
+    <div class="sl"><label for="sNeon">네온 효과</label><input id="sNeon" type="range" min="0" max="1.5" step="0.01" value="0.2"><output>20%</output></div>
+    <div class="sl"><label for="sRefl">반사광</label><input id="sRefl" type="range" min="0" max="2.5" step="0.05" value="1.2"><output>120%</output></div>
+    <p class="grp">네온 100% = 네온 과장판의 발광·번짐 세기, 0% = 실물 사양(발광 없음). 반사광 100% = 실물 사양 기준이며 환경 반사와 스트립 하이라이트를 함께 조절합니다.</p>
+  </div>
+  <div class="pane spec" id="pSpec"></div>
+  <div class="pane" id="pLight" hidden>
+    <p class="grp">조명 환경</p>
+    <div class="row" id="envRow"></div>
+    <p class="grp">배경</p>
+    <div class="row" id="bgRow"></div>
+    <p class="grp">시점</p>
+    <div class="row" id="viewRow"></div>
+    <p class="grp">움직임</p>
+    <div class="row">
+      <button class="pill" id="tSweep" aria-pressed="true">냉백색 스트립 스윕</button>
+      <button class="pill" id="tRot" aria-pressed="false">카메라 자동 회전</button>
     </div>
+    <div class="sl"><label for="sAng">조명 각도</label><input id="sAng" type="range" min="0" max="360" value="40"><output id="oAng">40°</output></div>
+  </div>
+  <div class="pane" id="pTune" hidden>
+    <div class="sl"><label for="sExp">노출</label><input id="sExp" type="range" min="0.3" max="2.5" step="0.05" value="1"><output>1.00</output></div>
+    <div class="sl"><label for="sKey">스트립 세기</label><input id="sKey" type="range" min="0" max="40" step="0.5" value="10"><output>10.0</output></div>
+    <div class="sl"><label for="sTexA">질감 깊이</label><input id="sTexA" type="range" min="0" max="2.5" step="0.05" value="1"><output>1.00</output></div>
+    <div class="sl"><label for="sRad">모서리 R</label><input id="sRad" type="range" min="0.005" max="0.2" step="0.005" value="0.04"><output>0.040</output></div>
+    <div class="sl"><label for="sRgh">거칠기 보정</label><input id="sRgh" type="range" min="-0.3" max="0.3" step="0.01" value="0"><output>0.00</output></div>
+    <p class="grp">정육면체 한 변 60 mm 기준. 조작부(중심 리브·TPE·도트 등)는 여섯 면 모두 같은 위치에 배치됩니다.</p>
+  </div>
+  </div>
+</section></div>
 
-    <!-- Google Maps JS SDK -->
-    <div id="map-api-container"></div>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-    <script>
-        let userLocation = null;
-        let currentCategory = "전체";
-        let geminiKey = localStorage.getItem('gemini_key') || "";
-        let googleKey = localStorage.getItem('google_key') || "";
-        let lastPlacesData = [];
+/* ───────── 렌더러 / 씬 ───────── */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.NeutralToneMapping; // Khronos PBR Neutral: 기본색(base color)을 왜곡 없이 재현
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+RectAreaLightUniformsLib.init();
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32,1,.05,100);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping=true; controls.dampingFactor=.08; controls.minDistance=.8; controls.maxDistance=14;
+controls.maxPolarAngle=Math.PI*.495;controls.enablePan=false;controls.minDistance=1; controls.autoRotateSpeed=.7;
+const pmrem = new THREE.PMREMGenerator(renderer);
+/* MSAA 렌더 → 네온 번짐(블룸) → 톤매핑/sRGB */
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4}));
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(256,256), .2, .42, .95);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
-        window.onload = () => {
-            initKeys();
-            refreshLocation();
-            if (googleKey) loadGoogleMaps();
-        };
+/* ───────── 맵 생성 유틸 (한 면 = 60 mm 레이아웃) ───────── */
+const S = 768;
+let seed = 11;
+const rnd=()=>(seed=(seed*16807)%2147483647,(seed-1)/2147483646);
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
+const hx=h=>{const n=parseInt(h.slice(1),16);return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255];};
+const lerp3=(a,b,t,o)=>{o[0]=a[0]+(b[0]-a[0])*t;o[1]=a[1]+(b[1]-a[1])*t;o[2]=a[2]+(b[2]-a[2])*t;return o;};
+const g=(o,v)=>{o[0]=o[1]=o[2]=v;};
+const neon=(v,c,b=0)=>{const d=Math.abs(v-c);return Math.min(1,ss(.0045,.0012,d)+ss(.04,0,d)*.22)*(1-b);};
+const Z=(u,v)=>{const r=Math.hypot(u-.5,v-.5)*2, e=Math.min(u,1-u,v,1-v);return {r,e,b:ss(.07,.035,e)};};
+const white=()=>{const h=new Float32Array(S*S);for(let i=0;i<h.length;i++)h[i]=rnd();return h;};
+function blur(h,r){
+  const t=new Float32Array(S*S),o=new Float32Array(S*S),w=2*r+1;
+  for(let y=0;y<S;y++){let s=0;for(let k=-r;k<=r;k++)s+=h[y*S+((k+S)%S)];
+    for(let x=0;x<S;x++){t[y*S+x]=s/w;s+=h[y*S+((x+r+1)%S)]-h[y*S+((x-r+S)%S)];}}
+  for(let x=0;x<S;x++){let s=0;for(let k=-r;k<=r;k++)s+=t[((k+S)%S)*S+x];
+    for(let y=0;y<S;y++){o[y*S+x]=s/w;s+=t[((y+r+1)%S)*S+x]-t[((y-r+S)%S)*S+x];}}
+  return o;
+}
+function vnoise(cx,cy){
+  const gr=new Float32Array(cx*cy);for(let i=0;i<gr.length;i++)gr[i]=rnd();
+  const h=new Float32Array(S*S);
+  for(let y=0;y<S;y++){const fy=y/S*cy,iy=Math.floor(fy);let ty=fy-iy;ty=ty*ty*(3-2*ty);
+    for(let x=0;x<S;x++){const fx=x/S*cx,ix=Math.floor(fx);let tx=fx-ix;tx=tx*tx*(3-2*tx);
+      const y0=(iy%cy)*cx,y1=((iy+1)%cy)*cx,x0=ix%cx,x1=(ix+1)%cx;
+      const a=gr[y0+x0],b=gr[y0+x1],c=gr[y1+x0],d=gr[y1+x1];
+      h[y*S+x]=a+(b-a)*tx+(c-a)*ty+(a-b-c+d)*tx*ty;}}
+  return h;
+}
+const mix=(...p)=>{const h=new Float32Array(S*S);for(const [a,w] of p)for(let i=0;i<h.length;i++)h[i]+=a[i]*w;return h;};
+function eachPx(fn){for(let y=0;y<S;y++){const v=(y+.5)/S;for(let x=0;x<S;x++)fn((x+.5)/S,v,y*S+x,x,y);}}
+function cnv(fn){const c=document.createElement('canvas');c.width=c.height=S;const ctx=c.getContext('2d');const im=ctx.createImageData(S,S);fn(im.data);ctx.putImageData(im,0,0);return c;}
+function pix(fn){const o=[0,0,0];return cnv(d=>eachPx((u,v,i,x,y)=>{fn(u,v,o,i,x,y);const k=i*4;d[k]=o[0]*255;d[k+1]=o[1]*255;d[k+2]=o[2]*255;d[k+3]=255;}));}
+function normalMap(h,str){
+  return cnv(d=>{for(let y=0;y<S;y++)for(let x=0;x<S;x++){
+    const l=h[y*S+Math.max(0,x-1)],r=h[y*S+Math.min(S-1,x+1)],u=h[Math.max(0,y-1)*S+x],b=h[Math.min(S-1,y+1)*S+x];
+    const nx=(l-r)*str,ny=(b-u)*str,il=1/Math.hypot(nx,ny,1),k=(y*S+x)*4;
+    d[k]=(nx*il*.5+.5)*255;d[k+1]=(ny*il*.5+.5)*255;d[k+2]=(il*.5+.5)*255;d[k+3]=255;}});
+}
+function T(c,srgb){const t=new THREE.CanvasTexture(c);t.anisotropy=maxAniso;if(srgb)t.colorSpace=THREE.SRGBColorSpace;return t;}
+/* 맵 묶음 → MeshPhysicalMaterial */
+function phys(p,m={}){
+  const q={...p}; ['sheenColor','attenuationColor','emissive'].forEach(k=>{if(q[k])q[k]=new THREE.Color(q[k]);});
+  const mat=new THREE.MeshPhysicalMaterial(q);
+  if(m.map)mat.map=T(m.map,true);
+  if(m.rough)mat.roughnessMap=T(m.rough);
+  if(m.metal)mat.metalnessMap=T(m.metal);
+  if(m.normal)mat.normalMap=T(m.normal);
+  if(m.ccMap)mat.clearcoatMap=T(m.ccMap);
+  if(m.ccRough)mat.clearcoatRoughnessMap=T(m.ccRough);
+  if(m.ccNormal)mat.clearcoatNormalMap=T(m.ccNormal);
+  if(m.sheenMap)mat.sheenColorMap=T(m.sheenMap,true);
+  if(m.emissive)mat.emissiveMap=T(m.emissive,true);
+  mat.userData.baseRough=q.roughness??1; mat.userData.glow=q.emissiveIntensity??0; mat.userData.envBoost=m.envBoost||1;
+  return mat;
+}
+/* 하프톤 망점: 피치 p(px) 안에서 커버리지 cov(0–1)를 원형 도트로 */
+function dot(x,y,p,cov){const cx=(Math.floor(x/p)+.5)*p,cy=(Math.floor(y/p)+.5)*p;const R=Math.sqrt(Math.max(0,cov))*p*.62;return Math.min(1,Math.max(0,R-Math.hypot(x+.5-cx,y+.5-cy)+.5));}
 
-        function initKeys() {
-            if (!geminiKey || !googleKey) {
-                document.getElementById('settings-panel').classList.remove('hidden');
-                document.getElementById('key-check-warning').classList.remove('hidden');
-            } else {
-                document.getElementById('gemini-key-input').value = geminiKey;
-                document.getElementById('google-key-input').value = googleKey;
-            }
-            checkProtocol();
-        }
+/* ───────── 소재 8종 ───────── */
+/* 1 면 = 60 mm → 1 mm = 1/60 단위. 모든 값은 문서 사양과 일반 물성 문헌값(IOR 등) 기준, 발광·과장 없음 */
+const MM = 1/60, BLK=[0,0,0];
+const DEFS = [
+{kr:'도약선 아노다이즈',en:'Leapline Anodized Aluminum',type:'단일 소재',mat:'Aluminum 6061',
+ proc:'CNC 밀링 → 미세 비드블라스트 → 방향성 브러싱 → Type II 아노다이징 → 코발트 블루 염색 → 열수 봉공 → 레이저 미세 텍스처링',
+ fin:'Satin Anodized / Directional Brushed / Micro-Grip',
+ eff:'전진 축을 따라 미끄러지는 푸른 하이라이트와 엄지 위치의 미세한 촉각 차이가, 망설임 없이 다음 동작으로 뛰어드는 즉각의 도약을 만듭니다.',
+ lim:'긴 샘플에서만 브러시 방향 균일, 복잡한 3D 면은 공정 편차. 합금 조성·피막 두께에 따른 배치별 색차 관리.',
+ col:'도심 보행로의 차가운 그림자와 맑은 하늘을 닮은 코발트 블루, 가장자리는 건조한 실버.',
+ sim:'한 방향 브러시 결(이방성) · 외곽 비드블라스트 저반사 띠 · 중심 동심 미세 리브(깊이 20–35 μm)',
+ pv:'금속도 0.90 · 거칠기 브러시 0.26 / 비드 0.50 / 리브 0.42 · 이방성 0.60 · 봉공 산화막 클리어코트 0.20(IOR 1.65)', sw:'#2a55a6',
+ make(){
+  const br=mix([vnoise(3,600),.6],[vnoise(10,S),.3],[white(),.06]), bd=blur(white(),1), H=new Float32Array(S*S);
+  eachPx((u,v,i)=>{const z=Z(u,v),c=ss(.36,.3,z.r)*(1-z.b),rib=.5+.5*Math.sin(z.r*Math.PI*52);
+    H[i]=br[i]*(1-z.b)*(1-c)*.7+bd[i]*z.b*.5+rib*c*.35+bd[i]*c*.12;});
+  const cob=hx('#2a55a6'),sil=hx('#c3c7cc');
+  const neo=hx('#3d8bff');
+  return {outer:phys({color:'#ffffff',metalness:.9,roughness:1,anisotropy:.6,clearcoat:.2,clearcoatRoughness:.35,ior:1.65,emissive:'#ffffff',emissiveIntensity:5},{
+   emissive:pix((u,v,o)=>lerp3(BLK,neo,neon(v,.5,Z(u,v).b),o)),
+   map:pix((u,v,o)=>lerp3(cob,sil,Z(u,v).b,o)),
+   rough:pix((u,v,o)=>{const z=Z(u,v);g(o,.26+.24*z.b+.16*ss(.36,.3,z.r)*(1-z.b));}),
+   normal:normalMap(H,5)})};
+ }},
+{kr:'스프링 펄스 티타늄',en:'Spring Pulse Titanium',type:'단일 소재',mat:'Titanium Grade 5 Ti-6Al-4V',
+ proc:'CNC 가공 → 진공 열처리 → 정밀 샷피닝 → PVD 이온 에칭 → 간섭 발색 아노다이징 → 선택 레이저 폴리싱',
+ fin:'Shot-Peened Titanium / Iridescent Satin / Polished Pulse Line',
+ eff:'탄성 있는 티타늄의 단단한 밀도와 순간적으로 번쩍이는 라임 하이라이트가, 시작 직전 몸에 차오르는 경쾌한 긴장을 선명하게 남깁니다.',
+ lim:'절삭·전처리 비용 높음. 간섭 발색은 관찰 각도와 로트별 산화막 두께에 따라 색 변화 큼. 강한 마찰부 발색층 마모 검증 필요.',
+ col:'아침 햇빛 아래 계단 난간에서 반사되는 라임 옐로와 블루 그레이 금속 그림자의 대비.',
+ sim:'샷피닝 확산면 · 폭 0.6 mm 레이저 폴리싱 라인(발광 없음, 반사로만 빛남) · 중심 라임 → 주변 스모크드 그레이 간섭색',
+ pv:'금속도 1.00 · 거칠기 피닝 0.45 / 폴리싱 라인 0.05 · 발색은 기본색으로 재현 + 각도 변화용 간섭막 0.12(TiO₂ IOR 2.4, 100–140 nm)', sw:'#adbd3c',
+ make(){
+  const pe=mix([blur(white(),1),.7],[blur(white(),2),.3]),H=new Float32Array(S*S);
+  const line=v=>ss(.3*MM,.2*MM,Math.abs(v-.5)); // 폭 0.6 mm
+  eachPx((u,v,i)=>{const l=line(v);H[i]=pe[i]*(1-l)*.5+.25*l;});
+  const lime=hx('#c8d64e'),mid=hx('#a0a874'),smoke=hx('#8a9098');
+  const neo=hx('#b6ff00');
+  return {outer:phys({color:'#ffffff',metalness:1,roughness:1,iridescence:.12,iridescenceIOR:2.4,iridescenceThicknessRange:[100,140],emissive:'#ffffff',emissiveIntensity:6},{
+   emissive:pix((u,v,o)=>lerp3(BLK,neo,neon(v,.5),o)),
+   map:pix((u,v,o)=>{const r=Z(u,v).r;if(r<.5)lerp3(lime,mid,ss(0,.5,r),o);else lerp3(mid,smoke,ss(.5,1.05,r),o);}),
+   rough:pix((u,v,o)=>{const l=line(v);g(o,.45*(1-l)+.05*l);}),
+   normal:normalMap(H,4)})};
+ }},
+{kr:'가속 프리즘 글라스',en:'Accelerant Prism Glass',type:'복합 소재',mat:'Aluminosilicate Glass 0.8T',
+ proc:'CNC 글라스 성형 → 화학 강화 → 후면 그라데이션 세라믹 잉크 프린팅 → UV 경화 → 반투명 광확산 잉크 인쇄 → AF 코팅',
+ fin:'Chemically Strengthened Glass / Translucent Gradient / Anti-Fingerprint Gloss',
+ eff:'맑은 중심에서 주변으로 빠르게 퍼지는 빛의 층이, 작은 선택 하나가 넓은 가능성으로 번지는 밝은 속도감을 보여줍니다.',
+ lim:'다층 인쇄 정합 오차 시 중심 확산 흐려짐. 강화 후 가공 시 가장자리 치핑. 곡면 적용 시 색 농도 균일성 보정.',
+ col:'유리 건물 사이로 번지는 투명 시안과, 중심에서 순간적으로 밝아지는 아이스 화이트.',
+ sim:'두께 0.8 mm 투과 유리 · 후면 망점 밀도가 중심→주변으로 변하는 하프톤 인쇄(발광 없음) · 전면 가장자리 에칭 밴드',
+ pv:'투과 1.00 · IOR 1.51 · 두께 0.8 mm · 거칠기 AF 글로스 0.02 / 에칭 0.35 · 인쇄층 거칠기 0.50', sw:'#19b7e0', glass:true, gap:.8,
+ make(){
+  const et=blur(white(),1),H=new Float32Array(S*S);
+  eachPx((u,v,i)=>{const e=Z(u,v).e,b=ss(.045,.035,e);H[i]=et[i]*b*.5;});
+  const ice=hx('#eaf7ff'),cy=hx('#19b7e0'),bl=hx('#1d55c4'),lt=[0,0,0],p=S/64;
+  return {
+   outer:phys({color:'#ffffff',metalness:0,roughness:1,transmission:1,thickness:.8*MM,ior:1.51,specularIntensity:1},{
+    rough:pix((u,v,o)=>g(o,.02+.33*ss(.045,.035,Z(u,v).e))), normal:normalMap(H,5)}),
+   inner:phys({color:'#ffffff',metalness:0,roughness:.5,ior:1.5,emissive:'#ffffff',emissiveIntensity:1.8},{
+    emissive:pix((u,v,o)=>{const r=Z(u,v).r;lerp3(cy,ice,ss(.45,0,r),o);const k=ss(.85,0,r);o[0]*=k;o[1]*=k;o[2]*=k;}),
+    map:pix((u,v,o,i,x,y)=>{const r=Z(u,v).r;lerp3(ice,cy,ss(0,.6,r),lt);lerp3(lt,bl,dot(x,y,p,ss(.12,.95,r)),o);})})};
+ }},
+{kr:'리바운드 세라믹 트랙',en:'Rebound Ceramic Track',type:'복합 소재',mat:'Zirconia Toughened Alumina (ZTA)',
+ proc:'CIM 성형 → 소결 → CNC 연삭 → 레이저 미세 채널 가공 → 유약 디지털 프린팅 → 재소성 → 국소 실크매트 래핑',
+ fin:'Silk-Matte Ceramic / Glazed Track / Micro-Ribbed',
+ eff:'고요한 세라믹 바탕 위에서 유약의 선명한 트랙이 튀어 오르듯 이어져, 빠른 반응 뒤에도 정돈된 자신감이 남습니다.',
+ lim:'소결 수축률 관리와 후가공 시간으로 단가 높음. 얇은 단면·날카로운 내측 코너 충격 파손.',
+ col:'햇빛에 데워진 콘크리트 계단의 웜 그레이 위로 전광판처럼 스치는 일렉트릭 오렌지 유약 선.',
+ sim:'실크매트 바탕 · 평행 유약 채널 6줄(유약 부위에만 유리질 광택) · 중심 리브가 외곽으로 무단차 소멸',
+ pv:'비금속 · ZTA IOR 1.70 · 거칠기 실크매트 0.55 / 리브 0.48 · 유약 클리어코트 1.00(거칠기 0.04)', sw:'#ff5a14',
+ make(){
+  const fn=blur(white(),2),H=new Float32Array(S*S);
+  const ch=v=>{let m=0;for(let k=0;k<6;k++)m=Math.max(m,ss(.0075,.003,Math.abs(v-(.44+k*.024))));return m;};
+  const rib=(u,r)=>(.5+.5*Math.sin(u*Math.PI*2*64))*ss(.36,.04,r);
+  eachPx((u,v,i)=>{const r=Z(u,v).r,c=ch(v),rb=rib(u,r)*(1-c);H[i]=fn[i]*.3+c*.1+rb*.4;});
+  const gry=hx('#8b857e'),gl=hx('#958f88'),org=hx('#ff5a14'),t=[0,0,0];
+  const neo=hx('#ff5a00');
+  return {outer:phys({color:'#ffffff',metalness:0,roughness:1,ior:1.7,clearcoat:1,clearcoatRoughness:.04,emissive:'#ffffff',emissiveIntensity:2.6},{
+   emissive:pix((u,v,o)=>lerp3(BLK,neo,ch(v),o)),
+   map:pix((u,v,o)=>{const r=Z(u,v).r,c=ch(v);lerp3(gry,gl,rib(u,r)*.4,t);lerp3(t,org,c,o);}),
+   rough:pix((u,v,o)=>{const r=Z(u,v).r,c=ch(v);g(o,(.55-.07*ss(.36,.04,r))*(1-c)+.25*c);}),
+   ccMap:pix((u,v,o)=>g(o,ch(v))),
+   normal:normalMap(H,5)})};
+ }},
+{kr:'플렉스 스텝 TPE',en:'Flexstep TPE Overmold',type:'복합 소재',mat:'PC+ABS FR3010 + TPE-S 65A',
+ proc:'PC+ABS 사출 → 플라즈마 처리 → TPE-S 이중사출 → 미세 텍스처 금형 전사 → UV 하드코트 인쇄 → 저온 열경화',
+ fin:'Soft-Touch Elastomer / Fine Rib Grip / Low-Gloss Hardcoat',
+ eff:'엄지가 닿는 순간 부드럽게 눌렸다가 바로 되돌아오는 리듬이, 생각보다 빠른 손의 선택을 가볍고 확실하게 밀어줍니다.',
+ lim:'이중사출 계면 박리, 땀·화장품 오염 내구성 검증 필요. 장기 사용 시 연질 영역 광택 변화와 먼지 부착.',
+ col:'그늘진 아스팔트 그레이 바탕에서 막 출발한 러닝화 끈처럼 밝게 솟는 애시드 라임.',
+ sim:'저광택 하드코트 바탕 · 중심 TPE 돔(0.8 → 0.25 mm 테이퍼, 무단차) · 마이크로 리브 · TPE에만 소프트터치 시트',
+ pv:'비금속 · IOR 1.50 · 거칠기 하드코트 0.42 / TPE 0.78 · TPE 시트 0.50', sw:'#b2e62a',
+ make(){
+  const sl=blur(white(),1),H=new Float32Array(S*S),zr=.34;
+  const zone=r=>ss(zr+.015,zr-.015,r);
+  eachPx((u,v,i)=>{const r=Z(u,v).r,z=zone(r);H[i]=Math.max(0,1-(r/zr)**2)*.45*z+(.5+.5*Math.sin(u*Math.PI*2*96))*.05*z+sl[i]*.07*(1-z);});
+  const as=hx('#3d3f43'),li=hx('#b2e62a'),blk=[0,0,0],sh=hx('#d8f59a');
+  return {outer:phys({color:'#ffffff',metalness:0,roughness:1,ior:1.5,sheen:1,sheenRoughness:.6,emissive:'#ffffff',emissiveIntensity:.35},{
+   emissive:pix((u,v,o)=>lerp3(BLK,li,zone(Z(u,v).r),o)),
+   map:pix((u,v,o)=>lerp3(as,li,zone(Z(u,v).r),o)),
+   rough:pix((u,v,o)=>g(o,.42+.36*zone(Z(u,v).r))),
+   sheenMap:pix((u,v,o)=>lerp3(blk,sh,zone(Z(u,v).r)*.5,o)),
+   normal:normalMap(H,8)})};
+ }},
+{kr:'에어 글라이드 폴리카보네이트',en:'Airglide Polycarbonate',type:'복합 소재',mat:'Polycarbonate Lexan 141R',
+ proc:'투명 PC 사출 → 후면 IMD 필름 라미네이션 → 레이저 미세 도트 제거 → 진공 증착 반투명 알루미늄 → UV AF 하드코트 → 열성형 트리밍',
+ fin:'Smoked Transparent / Satin Diffusion / Anti-Fingerprint Glide',
+ eff:'연기처럼 맑은 표면 아래의 빛이 빠르게 멀어지며 퍼져, 시선과 손가락이 저항 없이 앞으로 활주하는 개방감을 만듭니다.',
+ lim:'용제·자외선 민감 → 하드코트 내화학성·황변 안정성 중요. 곡률 큰 부위 IMD 필름 늘어짐과 무아레.',
+ col:'유리 파사드의 스모크 네이비 안에서 은빛 햇살이 빠르게 미끄러지는 차갑고 깨끗한 도심의 공기감.',
+ sim:'스모크 네이비 투과 PC(감쇠 흡수) · 내부 증착 알루미늄 도트가 중심에서 제거되며 바깥으로 짙어짐 · 전면 레이저 도트 밴드',
+ pv:'투과 1.00 · IOR 1.586 · 두께 1.0 mm · 감쇠색 스모크 네이비 · 거칠기 AF 0.03 / 도트 밴드 0.30 · 증착 Al 금속도 1.0 거칠기 0.20', sw:'#2a3e6e', glass:true, gap:1,
+ make(){
+  const H=new Float32Array(S*S),pd=S/96;
+  const band=r=>ss(.53,.56,r)*ss(.67,.64,r);
+  eachPx((u,v,i,x,y)=>{H[i]=dot(x,y,pd,.3)*band(Z(u,v).r)*.3;});
+  const nv=hx('#1a2336'),sv=hx('#c8cdd4'),p=S/64;
+  const cov=r=>ss(.08,.95,r);
+  return {
+   outer:phys({color:'#ffffff',metalness:0,roughness:1,transmission:1,thickness:1*MM,ior:1.586,attenuationColor:'#2a3e6e',attenuationDistance:.05,specularIntensity:1},{
+    rough:pix((u,v,o)=>g(o,.03+.27*band(Z(u,v).r))), normal:normalMap(blur(H,1),4)}),
+   inner:phys({color:'#ffffff',metalness:1,roughness:1,emissive:'#ffffff',emissiveIntensity:.7},{
+    emissive:pix((u,v,o,i,x,y)=>{const r=Z(u,v).r;g(o,dot(x,y,p,cov(r))*ss(.2,.9,r)*.8);}),
+    map:pix((u,v,o,i,x,y)=>lerp3(nv,sv,dot(x,y,p,cov(Z(u,v).r)),o)),
+    metal:pix((u,v,o,i,x,y)=>g(o,dot(x,y,p,cov(Z(u,v).r)))),
+    rough:pix((u,v,o,i,x,y)=>g(o,.5-.3*dot(x,y,p,cov(Z(u,v).r))))})};
+ }},
+{kr:'포워드 플로우 필름',en:'Forward Flow Optical Film',type:'복합 소재',mat:'PET Optical Film 188 μm + PMMA Hardcoat',
+ proc:'PET 롤투롤 프리즘 엠보싱 → 반투명 컬러 그라비어 인쇄 → 선택 알루미늄 증착 → PMMA 하드코트 → 레이저 패터닝 → 점착 라미네이션',
+ fin:'Micro-Prismatic Film / Directional Sheen / Satin Clearcoat',
+ eff:'한 방향으로만 또렷하게 달리는 광선이 시선을 앞으로 당기며, 짧은 순간에도 경쾌한 가속의 리듬을 만들어냅니다.',
+ lim:'깊은 성형·날카로운 모서리에서 프리즘 왜곡과 백화. 스크래치·박리 방지를 위한 기재·하드코트 조합 검증.',
+ col:'맑은 하늘빛 시안에서 화이트 실버로 급하게 사라지는 반사, 햇빛 아래 횡단보도 가장자리의 속도감.',
+ sim:'한 방향 비대칭 프리즘(톱니 노멀 + 이방성) · 증착 농도·시안 망점이 중심→주변으로 감쇠 · 중심 레이저 패턴 구간',
+ pv:'금속도 0.85 → 0.45(증착 감쇠) · 거칠기 0.22 / 레이저 구간 0.38 · 이방성 0.80 · PMMA 클리어코트 0.80(IOR 1.49, 거칠기 0.25)', sw:'#22a9dc',
+ make(){
+  const fn=blur(white(),1),H=new Float32Array(S*S),pt=6;
+  const lz=r=>ss(.22,.18,r);
+  eachPx((u,v,i,x,y)=>{const f=(y%pt)/pt,saw=f<.8?f/.8:(1-f)/.2,l=lz(Z(u,v).r);H[i]=saw*.5*(1-l*.5)+fn[i]*.4*l;});
+  const cy=hx('#22a9dc'),ws=hx('#e3e8ee');
+  const neo=hx('#29d4ff');
+  return {outer:phys({color:'#ffffff',metalness:1,roughness:1,anisotropy:.8,clearcoat:.8,clearcoatRoughness:.25,emissive:'#ffffff',emissiveIntensity:5},{
+   emissive:pix((u,v,o)=>lerp3(BLK,neo,Math.max(neon(v,.5),.55*neon(v,.44),.55*neon(v,.56),.3*neon(v,.38),.3*neon(v,.62)),o)),
+   map:pix((u,v,o)=>lerp3(cy,ws,ss(.05,.9,Z(u,v).r),o)),
+   metal:pix((u,v,o)=>g(o,.85-.4*ss(.05,1,Z(u,v).r))),
+   rough:pix((u,v,o)=>g(o,.22+.16*lz(Z(u,v).r))),
+   normal:normalMap(H,2.5)})};
+ }},
+{kr:'도시 탄성 직조 컴포지트',en:'Urban Rebound Woven Composite',type:'복합 소재',mat:'rPET Monofilament Textile + TPU Film 0.15T',
+ proc:'rPET 자카드 제직 → 고주파 TPU 필름 라미네이션 → 3D 열프레스 → 실리콘 마이크로도트 프린팅 → 레이저 컷팅 → 발수 코팅',
+ fin:'Tension Woven / Translucent TPU / Silicone Micro-Dot Grip',
+ eff:'팽팽한 직물 결 위로 빛과 촉감이 중심에서 퍼져 나가며, 가볍게 착지한 뒤 다시 튀어 오르는 젊은 추진력을 남깁니다.',
+ lim:'가장자리 들뜸 → 봉제·열접착 보강. 오염·반복 굴곡에 따른 TPU 황변, 실리콘 도트 마모 검증.',
+ col:'햇살을 머금은 웜 화이트 직물 위에 투명한 선셋 코럴이 중심에서 번지는, 달리기 직전의 밝은 체온.',
+ sim:'사선 능직 직물 위 매끈한 TPU 필름(클리어코트) · 코럴이 중심에서 번짐 · 중심 실리콘 마이크로도트(필름 위 요철, 무광)',
+ pv:'비금속 · 직물 거칠기 0.85 · 직물 시트 0.30 · TPU 클리어코트 1.00(IOR 1.50, 거칠기 0.18) · 실리콘 도트 거칠기 0.70', sw:'#f2705a',
+ make(){
+  const c=S/96,fib=vnoise(S/4,8),H=new Float32Array(S*S),D=new Float32Array(S*S),PR=new Float32Array(S*S),dp=S/40,dr=dp*.24;
+  const dz=r=>ss(.31,.27,r);
+  eachPx((u,v,i,x,y)=>{
+    const ii=Math.floor(x/c),jj=Math.floor(y/c),fx=(x%c)/c,fy=(y%c)/c,warp=((ii+jj)&3)<2;
+    const prof=Math.pow(warp?Math.sin(Math.PI*fx):Math.sin(Math.PI*fy),.6);PR[i]=prof;
+    const cx=(Math.floor(x/dp)+.5)*dp,cy=(Math.floor(y/dp)+.5)*dp,d=Math.hypot(x+.5-cx,y+.5-cy);
+    D[i]=(d<dr?Math.sqrt(1-(d/dr)**2):0)*dz(Z(u,v).r);
+    H[i]=prof*.45+fib[i]*.08+D[i]*.7;});
+  const wh=hx('#ece5d8'),co=hx('#f2705a'),t=[0,0,0];
+  return {outer:phys({color:'#ffffff',metalness:0,roughness:.85,clearcoat:1,clearcoatRoughness:1,sheen:.3,sheenRoughness:.7,sheenColor:'#fff1e6',emissive:'#ffffff',emissiveIntensity:.9},{
+   emissive:pix((u,v,o)=>lerp3(BLK,co,ss(.55,0,Z(u,v).r)*.7,o)),
+   map:pix((u,v,o,i)=>{const k=.82+.18*PR[i];t[0]=wh[0]*k;t[1]=wh[1]*k;t[2]=wh[2]*k;lerp3(t,co,ss(.7,0,Z(u,v).r)*.65,o);}),
+   ccRough:pix((u,v,o,i)=>g(o,.18+.52*Math.min(1,D[i]*3))),
+   normal:normalMap(H,5), ccNormal:normalMap(D,6)})};
+ }}
+];
 
-        function checkProtocol() {
-            const badge = document.getElementById('secure-badge');
-            if (window.location.protocol === 'https:') {
-                badge.innerText = 'HTTPS SECURE';
-                badge.classList.add('text-green-600');
-            } else {
-                badge.innerText = 'HTTP INSECURE';
-                badge.classList.add('text-red-600');
-                showError("현재 접속 주소가 HTTPS가 아닙니다. 브라우저 정책상 위치 정보 수신이 제한될 수 있습니다.");
-            }
-        }
+/* ───────── 조명 환경 ───────── */
+/* 환경 패널 가장자리를 부드럽게 감쇠 — 각진 패널이 거울면 모서리(구면)에 칼날·물방울 모양으로 맺혀 깨진 것처럼 보이던 문제 */
+const softTex=(()=>{const n=128,c=document.createElement('canvas');c.width=c.height=n;const x=c.getContext('2d'),im=x.createImageData(n,n);
+  for(let j=0;j<n;j++)for(let i=0;i<n;i++){const ex=Math.min(i,n-1-i)/(n*.5),ey=Math.min(j,n-1-j)/(n*.5);const v=ss(0,.6,ex)*ss(0,.6,ey)*255,k=(j*n+i)*4;im.data[k]=im.data[k+1]=im.data[k+2]=v;im.data[k+3]=255;}
+  x.putImageData(im,0,0);return new THREE.CanvasTexture(c);})();
+function stripEnv(cfg){
+  const s=new THREE.Scene();
+  s.add(new THREE.Mesh(new THREE.BoxGeometry(26,26,26),new THREE.MeshBasicMaterial({color:new THREE.Color(cfg.bg),side:THREE.BackSide})));
+  for(const p of cfg.panels){const m=new THREE.Mesh(new THREE.PlaneGeometry(p.w,p.h),new THREE.MeshBasicMaterial({color:new THREE.Color(p.c).multiplyScalar(p.i*1.6),map:softTex}));m.position.set(...p.pos);m.lookAt(0,.5,0);s.add(m);}
+  return pmrem.fromScene(s,.02).texture;
+}
+const ENVS=[
+ {label:'제품 촬영 스튜디오',bg:'#4a4a4d',back:'#000000',floorC:'#0a0a0b',sun:{c:'#ffffff',i:24},key:5,
+  panels:[{w:9,h:9,pos:[0,9,0],c:'#ffffff',i:2.2},{w:9,h:6,pos:[3,3,8],c:'#ffffff',i:.9},{w:2,h:8,pos:[6,2.5,3],c:'#f2f5ff',i:2.4},{w:2,h:8,pos:[-6,3,-3],c:'#fff8f0',i:1.6},{w:14,h:6,pos:[0,2,-10],c:'#ffffff',i:.35},{w:14,h:6,pos:[-10,2,2],c:'#ffffff',i:.3}]},
+ {label:'도심 햇살',bg:'#6f8197',back:'#aeb9c5',floorC:'#8d8b86',sun:{c:'#fff1dc',i:45},key:5.1,
+  panels:[{w:22,h:22,pos:[0,12,0],c:'#cfe0ff',i:1.5},{w:2.6,h:2.6,pos:[6,8,4],c:'#fff3e0',i:14},{w:10,h:12,pos:[-11,3,0],c:'#9fb0c4',i:.7},{w:12,h:10,pos:[0,3,-11],c:'#c9d0d8',i:.9},{w:22,h:22,pos:[0,-8,0],c:'#8a857c',i:.45}]},
+ {label:'오전 사선광',bg:'#2d3440',back:'#39414d',floorC:'#6f6c67',sun:{c:'#ffe2b8',i:35},key:3.4,
+  panels:[{w:4.5,h:1.8,pos:[9,1.4,3],c:'#ffe2b8',i:12},{w:20,h:20,pos:[0,12,0],c:'#b8cff0',i:.7},{w:10,h:8,pos:[-11,3,-2],c:'#8ea2bd',i:.4}]},
+ {label:'암실 냉백색 스트립',bg:'#020203',back:'#050506',floorC:'#0c0c0d',sun:{c:'#ffffff',i:14},key:10.2,
+  panels:[{w:.8,h:9,pos:[4.5,3,2.5],c:'#e2ebff',i:5},{w:4,h:2,pos:[0,9,0],c:'#ffffff',i:.18},{w:3,h:3,pos:[-6,2,-4],c:'#d8e2f5',i:.5}]},
+ {label:'스튜디오',room:true,back:'#1b1c1f',floorC:'#2a2b2e',sun:{c:'#ffffff',i:22},key:6.8}
+];
+let envIdx=0,bgMode=1; // 0 검정 · 1 흰색(기본)
+const envTex=e=>e.tex||(e.tex=e.room?pmrem.fromScene(new RoomEnvironment(renderer),.04).texture:stripEnv(e));
 
-        function saveAllKeys() {
-            geminiKey = document.getElementById('gemini-key-input').value.trim();
-            googleKey = document.getElementById('google-key-input').value.trim();
-            
-            if (!geminiKey || !googleKey) {
-                showError("두 API 키를 모두 입력해 주세요.");
-                return;
-            }
+/* ───────── 바닥 / 조명 ───────── */
+const fa=document.createElement('canvas');fa.width=fa.height=256;{const x=fa.getContext('2d'),gr=x.createRadialGradient(128,128,0,128,128,128);gr.addColorStop(0,'#fff');gr.addColorStop(.55,'#888');gr.addColorStop(1,'#000');x.fillStyle=gr;x.fillRect(0,0,256,256);}
+const floorMat=new THREE.MeshStandardMaterial({color:'#8d8b86',roughness:.92,metalness:0,transparent:true,alphaMap:new THREE.CanvasTexture(fa)});
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(16,16),floorMat);floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+const key=new THREE.RectAreaLight('#e6eeff',6,.22,3.2);scene.add(key);
+const sun=new THREE.SpotLight('#ffffff',30,0,.55,.9,2);sun.position.set(2.2,5.2,2.4);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0004;sun.shadow.normalBias=.02;sun.shadow.camera.near=2;sun.shadow.camera.far=12;scene.add(sun);scene.add(sun.target);
 
-            localStorage.setItem('gemini_key', geminiKey);
-            localStorage.setItem('google_key', googleKey);
-            document.getElementById('key-check-warning').classList.add('hidden');
-            toggleSettings();
-            loadGoogleMaps();
-            showError("API 설정이 저장되었습니다.");
-        }
+/* ───────── 시편 ───────── */
+let RAD=.04;const geoCache={};
+/* RoundedBoxGeometry(r160)의 UV는 평면 중앙에서 퇴화(같은 값으로 붕괴)해 노멀맵이 별/마름모 모양으로 깨짐 →
+   면별 평면 투영 UV로 다시 계산 (각 면을 바깥에서 볼 때 u=오른쪽, v=위, 미러링 없음) */
+function planarUV(gm,size){
+  const p=gm.attributes.position.array,uv=gm.attributes.uv.array,ft=p.length/6;
+  for(let i=0,j=0;i<p.length;i+=3,j+=2){
+    const x=p[i]/size,y=p[i+1]/size,z=p[i+2]/size;let u,v;
+    switch(Math.floor(i/ft)){case 0:u=.5-z;v=.5+y;break;case 1:u=.5+z;v=.5+y;break;case 2:u=.5+x;v=.5-z;break;
+      case 3:u=.5+x;v=.5+z;break;case 4:u=.5+x;v=.5+y;break;default:u=.5-x;v=.5+y;}
+    uv[j]=u;uv[j+1]=v;}
+  gm.attributes.uv.needsUpdate=true;return gm;
+}
+const geo=(r,gap)=>{const k=(gap?'i'+gap:'o')+r.toFixed(3);
+  if(geoCache[k])return geoCache[k];
+  const d=(gap||0)*MM,sz=1-2*d; // 내부 인쇄·증착층: 사양 두께만큼 안쪽으로 평행 오프셋
+  return geoCache[k]=planarUV(new RoundedBoxGeometry(sz,sz,sz,8,Math.max(.003,r-d)),sz);};
+const specimens=[];const tune={amp:1,env:1.2,rough:0,glow:.2};let keyBase=5;
+function buildSpecimen(def,idx){
+  const m=def.make(),gp=new THREE.Group();gp.userData.idx=idx;
+  const outer=new THREE.Mesh(geo(RAD),m.outer);outer.castShadow=true;outer.receiveShadow=!def.glass;gp.add(outer);
+  let inner=null;if(m.inner){inner=new THREE.Mesh(geo(RAD,def.gap),m.inner);gp.add(inner);}
+  gp.position.y=.5;scene.add(gp);
+  specimens.push({def,g:gp,outer,inner,mats:[m.outer,m.inner].filter(Boolean)});
+}
+function applyTune(){
+  for(const s of specimens)for(const m of s.mats){
+    m.normalScale.set(tune.amp,tune.amp);m.clearcoatNormalScale.set(tune.amp,tune.amp);
+    m.envMapIntensity=tune.env*m.userData.envBoost;m.emissiveIntensity=m.userData.glow*tune.glow;m.roughness=THREE.MathUtils.clamp(m.userData.baseRough+tune.rough,.02,1);}
+  floorMat.envMapIntensity=tune.env*.6;
+  key.intensity=keyBase*tune.env;
+  bloom.strength=Math.min(1.2,tune.glow);bloom.enabled=tune.glow>0.001;
+}
+const applyRadius=()=>specimens.forEach(s=>{s.outer.geometry=geo(RAD);if(s.inner)s.inner.geometry=geo(RAD,s.def.gap);});
 
-        function loadGoogleMaps() {
-            const container = document.getElementById('map-api-container');
-            container.innerHTML = '';
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${googleKey}&libraries=places`;
-            script.async = true;
-            script.defer = true;
-            container.appendChild(script);
-        }
+/* ───────── 모드 / 배치 / 시점 ───────── */
+let mode='single',sel=0;
+const ring=new THREE.Mesh(new THREE.RingGeometry(.62,.66,64),new THREE.MeshBasicMaterial({color:'#e6eeff',transparent:true,opacity:.6}));
+ring.rotation.x=-Math.PI/2;ring.position.y=.003;scene.add(ring);
+function layout(){
+  const portrait=innerHeight>innerWidth;
+  specimens.forEach((s,i)=>{
+    if(mode==='single'){s.g.visible=i===sel;s.g.scale.setScalar(1);s.g.position.set(0,.5,0);}
+    else{s.g.visible=true;const sc=.78,cols=portrait?2:4,rows=8/cols,gap=1.22;s.g.scale.setScalar(sc);
+      s.g.position.set((i%cols-(cols-1)/2)*gap,.5*sc,(Math.floor(i/cols)-(rows-1)/2)*gap);}
+  });
+  ring.visible=mode==='grid';const s=specimens[sel];if(s){ring.position.x=s.g.position.x;ring.position.z=s.g.position.z;}
+}
+const VIEWS={
+  oblique:{label:'사선 45°',s:[2.6,1.75,3.1],t:[0,.5,0]},
+  front:{label:'정면',s:[0,.55,3.9],t:[0,.5,0]},
+  graze:{label:'그레이징',s:[3.6,.62,.55],t:[0,.5,0]},
+  center:{label:'조작부 매크로',s:[.12,.6,1.45],t:[0,.5,0]},
+  edge:{label:'엣지 매크로',s:[.78,1.18,.82],t:[0,.5,0]},
+  top:{label:'윗면',s:[.01,3.6,.6],t:[0,.5,0]}
+};
+let view='oblique';
+function setView(v){
+  view=v;
+  if(mode==='grid'){const p=innerHeight>innerWidth;camera.position.set(0,p?9.4:4.6,p?4.6:6.2);controls.target.set(0,.39,0);}
+  else{camera.position.set(...VIEWS[v].s);controls.target.set(...VIEWS[v].t);}
+  controls.update();
+}
 
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('hidden');
-        }
+/* ───────── UI ───────── */
+const $=id=>document.getElementById(id),chipsEl=$('chips');
+const lighten=h=>{const c=new THREE.Color(h);c.offsetHSL(0,0,.16);return '#'+c.getHexString();};
+DEFS.forEach((d,i)=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed',i===0);
+  b.innerHTML=`<i style="background:radial-gradient(120% 90% at 30% 20%, ${lighten(d.sw)} 0%, ${d.sw} 60%, #111 100%)"></i><div><span>${String(i+1).padStart(2,'0')} ${d.kr}</span><small>${d.mat}</small></div>`;
+  b.onclick=()=>select(i,true);chipsEl.appendChild(b);});
+function renderSpec(){
+  const d=DEFS[sel],nm=`${String(sel+1).padStart(2,'0')} ${d.kr}`;
+  $('pSpec').innerHTML=`<h2>${d.kr}</h2><p class="en">${d.en}</p><p class="mat">${d.type} · ${d.mat}</p>
+  <dl><dt>공정</dt><dd>${d.proc}</dd><dt>마감</dt><dd>${d.fin}</dd><dt>효과</dt><dd>${d.eff}</dd><dt>한계</dt><dd>${d.lim}</dd><dt>구현</dt><dd>${d.sim}</dd><dt>물성값</dt><dd>${d.pv}</dd></dl>
+  <p class="note">${d.col}</p>`;
+  $('hdrSub').textContent=nm;$('gripName').textContent=nm;
+}
+function select(i,scroll){sel=i;[...chipsEl.children].forEach((c,k)=>c.setAttribute('aria-pressed',k===i));
+  if(scroll)chipsEl.children[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});renderSpec();layout();}
+const sheet=$('sheet');let sy=null,swiped=false;
+function setCollapsed(c){sheet.classList.toggle('collapsed',c);$('grip').setAttribute('aria-expanded',!c);
+  $('gripHint').textContent=c?'탭하거나 위로 밀어 사양·조정 열기':'탭하거나 아래로 밀어 접기';}
+$('grip').onclick=()=>{if(!swiped)setCollapsed(!sheet.classList.contains('collapsed'));swiped=false;};
+$('handle').addEventListener('pointerdown',e=>{sy=e.clientY;swiped=false;});
+$('handle').addEventListener('pointerup',e=>{if(sy===null)return;const dy=e.clientY-sy;sy=null;
+  if(dy>28){setCollapsed(true);swiped=true;}else if(dy<-28){setCollapsed(false);swiped=true;}});
+$('prev').onclick=()=>select((sel+7)%8,true);$('next').onclick=()=>select((sel+1)%8,true);
+canvas.addEventListener('pointerdown',()=>{if(innerHeight>innerWidth)setCollapsed(true);});
+setCollapsed(true);
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>document.querySelectorAll('.tabs button').forEach(x=>{x.setAttribute('aria-selected',x===b);$(x.dataset.p).hidden=x!==b;}));
+function setMode(m){mode=m;$('mSingle').setAttribute('aria-pressed',m==='single');$('mGrid').setAttribute('aria-pressed',m==='grid');layout();setView(view);}
+$('mSingle').onclick=()=>setMode('single');$('mGrid').onclick=()=>setMode('grid');
+ENVS.forEach((e,i)=>{const b=document.createElement('button');b.className='pill';b.textContent=e.label;b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{setEnv(i);[...$('envRow').children].forEach((x,k)=>x.setAttribute('aria-pressed',k===i));};$('envRow').appendChild(b);});
+Object.entries(VIEWS).forEach(([k,v])=>{const b=document.createElement('button');b.className='pill';b.textContent=v.label;b.setAttribute('aria-pressed',k===view);
+  b.onclick=()=>{if(mode==='grid')mode='single';setView(k);setMode(mode);[...$('viewRow').children].forEach(x=>x.setAttribute('aria-pressed',x===b));};$('viewRow').appendChild(b);});
+['검정 배경','흰색 배경'].forEach((t,i)=>{const b=document.createElement('button');b.className='pill';b.textContent=t;b.setAttribute('aria-pressed',i===bgMode);
+  b.onclick=()=>{bgMode=i;setEnv(envIdx);[...$('bgRow').children].forEach((x,k)=>x.setAttribute('aria-pressed',k===i));};$('bgRow').appendChild(b);});
+let sweep=true,angle=40;
+$('tSweep').onclick=e=>{sweep=!sweep;e.currentTarget.setAttribute('aria-pressed',sweep);};
+$('tRot').onclick=e=>{controls.autoRotate=!controls.autoRotate;e.currentTarget.setAttribute('aria-pressed',controls.autoRotate);};
+const bind=(id,fn,fmt=v=>v.toFixed(2))=>{const el=$(id),out=el.nextElementSibling;el.addEventListener('input',()=>{const v=parseFloat(el.value);out.textContent=fmt(v);fn(v);});};
+const setSlider=(id,v,fmt=x=>x.toFixed(1))=>{$(id).value=v;$(id).nextElementSibling.textContent=fmt(v);};
+bind('sAng',v=>angle=v,v=>Math.round(v)+'°');
+bind('sExp',v=>renderer.toneMappingExposure=v);
+const pct=v=>Math.round(v*100)+'%';
+bind('sNeon',v=>{tune.glow=v;applyTune();},pct);
+bind('sRefl',v=>{tune.env=v;applyTune();},pct);
+bind('sKey',v=>{keyBase=v;applyTune();},v=>v.toFixed(1));
+bind('sTexA',v=>{tune.amp=v;applyTune();});
+bind('sRad',v=>{RAD=v;applyRadius();},v=>v.toFixed(3));
+bind('sRgh',v=>{tune.rough=v;applyTune();});
+function setEnv(i){
+  envIdx=i;const e=ENVS[i];
+  scene.environment=envTex(e);scene.background=new THREE.Color(bgMode===1?'#ffffff':'#000000');document.body.classList.toggle('light-bg',bgMode===1);
+  floorMat.color.set(bgMode===1?'#e9e9eb':'#060607');sun.color.set(e.sun.c);sun.intensity=e.sun.i;
+  keyBase=e.key;setSlider('sKey',e.key);applyTune();
+}
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
+canvas.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+canvas.addEventListener('pointerup',e=>{if(!down||mode!=='grid')return;if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;
+  ptr.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ptr,camera);
+  const h=ray.intersectObjects(specimens.map(s=>s.outer))[0];if(h)select(h.object.parent.userData.idx,true);});
 
-        function selectCategory(name, btn) {
-            currentCategory = name;
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('btn-label').innerText = `${name} 정보 분석 시작`;
-        }
-
-        function refreshLocation() {
-            const statusText = document.getElementById('status-text');
-            const statusDot = document.getElementById('status-dot');
-            const errorHint = document.getElementById('error-hint');
-            const btn = document.getElementById('main-btn');
-            
-            statusText.innerText = "GPS 신호를 찾는 중...";
-            statusDot.className = "animate-pulse bg-amber-400 w-2.5 h-2.5 rounded-full";
-            errorHint.classList.add('hidden');
-            btn.disabled = true;
-
-            const success = (pos) => {
-                userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                statusText.innerText = "위치 수신 완료";
-                statusDot.className = "bg-green-500 w-2.5 h-2.5 rounded-full";
-                btn.disabled = false;
-            };
-
-            const fail = (err) => {
-                statusText.innerText = "위치 확인 실패";
-                statusDot.className = "bg-red-500 w-2.5 h-2.5 rounded-full";
-                errorHint.classList.remove('hidden');
-                errorHint.innerText = "GPS 권한을 허용했는지, 보안(HTTPS) 연결인지 확인해 주세요.";
-            };
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success, fail, { timeout: 10000 });
-            } else {
-                statusText.innerText = "GPS 미지원 브라우저";
-            }
-        }
-
-        async function startProcess() {
-            if (!userLocation || !googleKey || !geminiKey) return;
-
-            const resultsContainer = document.getElementById('results-container');
-            const skeleton = document.getElementById('skeleton');
-            const emptyState = document.getElementById('empty-state');
-            const btn = document.getElementById('main-btn');
-
-            emptyState.classList.add('hidden');
-            skeleton.classList.remove('hidden');
-            resultsContainer.innerHTML = '';
-            btn.disabled = true;
-
-            try {
-                // 1단계: Google Places API에서 실제 데이터 가져오기
-                const places = await fetchNearbyPlaces();
-                if (places.length === 0) throw new Error("주변에서 유효한 장소를 찾을 수 없습니다.");
-                
-                lastPlacesData = places;
-
-                // 2단계: Gemini API로 분석 요청
-                await getGeminiAnalysis(places);
-
-            } catch (err) {
-                showError(err.message);
-                emptyState.classList.remove('hidden');
-            } finally {
-                skeleton.classList.add('hidden');
-                btn.disabled = false;
-            }
-        }
-
-        function fetchNearbyPlaces() {
-            return new Promise((resolve, reject) => {
-                if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
-                    return reject(new Error("Google Maps 라이브러리가 로드되지 않았습니다. API 키를 확인해 주세요."));
-                }
-
-                const mapDiv = document.createElement('div');
-                const service = new google.maps.places.PlacesService(mapDiv);
-                
-                const typeMap = {
-                    "음식점": "restaurant",
-                    "관광명소": "tourist_attraction",
-                    "공원": "park",
-                    "카페": "cafe",
-                    "전체": "establishment"
-                };
-
-                const request = {
-                    location: new google.maps.LatLng(userLocation.lat, userLocation.lng),
-                    radius: '1500',
-                    type: typeMap[currentCategory] || 'establishment'
-                };
-
-                service.nearbySearch(request, (results, status) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        const processed = results.slice(0, 10).map(p => ({
-                            name: p.name,
-                            place_id: p.place_id,
-                            rating: p.rating || "없음",
-                            address: p.vicinity,
-                            price_level: p.price_level || 0,
-                            types: p.types
-                        }));
-                        resolve(processed);
-                    } else {
-                        reject(new Error("장소 데이터를 가져오지 못했습니다: " + status));
-                    }
-                });
-            });
-        }
-
-        async function getGeminiAnalysis(places, customQuery = null) {
-            const resultsContainer = document.getElementById('results-container');
-            const chatArea = document.getElementById('ai-chat-area');
-            
-            const systemPrompt = `
-                당신은 전세계를 여행하는 한국인 가성비 여행 전문가입니다. 
-                사용자가 제공한 실제 장소 목록(JSON)을 보고, 가성비(Value for Money), 한국인 취향, 특징을 분석하여 추천 리스트를 만드세요.
-                추천 근거에는 구글 평점과 가격대를 고려하세요.
-                반드시 다음 JSON 형식으로만 답변하세요:
-                {
-                    "recommendations": [
-                        {
-                            "name": "장소명(입력된 이름과 동일해야 함)",
-                            "place_id": "제공된 place_id",
-                            "recommendation_reason": "왜 이곳이 가성비가 좋고 추천하는지 설명",
-                            "cost_info": "현지 물가 기준 예상 비용 및 원화 가치",
-                            "popular_menu": "한국인에게 인기 있는 메뉴 (음식점이 아니면 적절한 추천 활동)",
-                            "walking_tip": "현재 위치 기준 도보 팁"
-                        }
-                    ]
-                }
-            `;
-
-            const userPrompt = customQuery || `다음 장소 목록을 분석해서 가성비 좋은 순으로 추천해 주세요: ${JSON.stringify(places)}`;
-
-            try {
-                const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: userPrompt }] }],
-                            systemInstruction: { parts: [{ text: systemPrompt }] },
-                            generationConfig: { 
-                                responseMimeType: "application/json",
-                                responseSchema: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        recommendations: {
-                                            type: "ARRAY",
-                                            items: {
-                                                type: "OBJECT",
-                                                properties: {
-                                                    name: { type: "STRING" },
-                                                    place_id: { type: "STRING" },
-                                                    recommendation_reason: { type: "STRING" },
-                                                    cost_info: { type: "STRING" },
-                                                    popular_menu: { type: "STRING" },
-                                                    walking_tip: { type: "STRING" }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    }
-                );
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-
-                const analysis = JSON.parse(data.candidates[0].content.parts[0].text);
-                renderCards(analysis.recommendations, !!customQuery);
-                chatArea.classList.remove('hidden');
-
-            } catch (err) {
-                showError("AI 분석 오류: " + err.message);
-            }
-        }
-
-        function renderCards(list, isAppend) {
-            const container = document.getElementById('results-container');
-            if (!isAppend) container.innerHTML = '';
-
-            list.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-[2.5rem] p-7 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-5";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="text-[11px] font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest italic">Highly Recommended</span>
-                        <span class="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-1 rounded-md">🚶 ${item.walking_tip}</span>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3 text-gray-900 tracking-tight">${item.name}</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-6 font-medium">"${item.recommendation_reason}"</p>
-                    
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                            <span class="text-xs font-bold text-gray-400 shrink-0 w-16">💰 예상 비용</span>
-                            <span class="text-sm text-gray-800 font-bold">${item.cost_info}</span>
-                        </div>
-                        <div class="flex items-center gap-4 bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
-                            <span class="text-xs font-bold text-blue-400 shrink-0 w-16">⭐ 인기 정보</span>
-                            <span class="text-sm text-blue-900 font-bold">${item.popular_menu}</span>
-                        </div>
-                    </div>
-
-                    <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name)}&query_place_id=${item.place_id}')" 
-                            class="w-full mt-8 bg-gray-900 text-white py-4 rounded-2xl text-sm font-bold active:scale-[0.96] transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-2">
-                        <img src="https://www.google.com/images/branding/product/2x/maps_96dp.png" class="w-4 h-4" alt="maps">
-                        구글 지도로 정확한 위치 확인
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-            
-            if (isAppend) window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        }
-
-        async function chatAction(type) {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text || !lastPlacesData.length) return;
-
-            const btn = document.getElementById('main-btn');
-            btn.disabled = true;
-            
-            const prefix = type === 'ask' ? "이전 추천 장소들에 대해 궁금한 점이 있습니다: " : "추천 리스트를 다음 요청에 맞춰 다시 분석해 주세요: ";
-            const query = `${prefix}${text}. 기반 데이터는 동일하게 사용하세요: ${JSON.stringify(lastPlacesData)}`;
-            
-            await getGeminiAnalysis(lastPlacesData, query);
-            input.value = '';
-            btn.disabled = false;
-        }
-
-        function showError(msg) {
-            const modal = document.getElementById('error-modal');
-            const message = document.getElementById('error-message');
-            message.innerText = msg;
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('error-modal').classList.add('hidden');
-        }
-    </script>
+/* ───────── 루프 ───────── */
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.fov=h>w?42:32;camera.updateProjectionMatrix();}
+addEventListener('resize',()=>{resize();layout();if(mode==='grid')setView(view);});
+const clock=new THREE.Clock(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tick(){
+  const dt=clock.getDelta();
+  if(sweep&&!reduce){angle=(angle+dt*14)%360;$('sAng').value=angle;$('oAng').textContent=Math.round(angle)+'°';}
+  const a=THREE.MathUtils.degToRad(angle);key.position.set(Math.cos(a)*3.2,1.9,Math.sin(a)*3.2);key.lookAt(0,.5,0);
+  controls.update();composer.render();requestAnimationFrame(tick);
+}
+const frame=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+(async()=>{
+  try{
+    for(let i=0;i<DEFS.length;i++){$('load').textContent=`표면 맵을 생성하는 중… ${i+1}/8 ${DEFS[i].kr}`;await frame();buildSpecimen(DEFS[i],i);}
+    setEnv(0);applyTune();resize();select(0,false);setView('oblique');
+    $('load').classList.add('done');tick();
+  }catch(err){$('load').textContent='3D를 시작하지 못했습니다. WebGL2를 지원하는 최신 브라우저에서 다시 열어 주세요. ('+err.message+')';}
+})();
+</script>
 </body>
 </html>
+
+</body></html>
