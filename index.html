@@ -176,8 +176,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 /* ───────── 렌더러 / 씬 ───────── */
 const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+/* 스마트폰/태블릿은 원본 렌더링 설정을 100% 보존합니다.
+   PC는 별도 GPU 경로를 사용하며 해상도/블룸/그림자 작업량을 최적화합니다. */
+const IS_MOBILE = !!navigator.userAgentData?.mobile ||
+  /Android|iPhone|iPad|iPod|Mobile|Windows Phone|Silk|Kindle/i.test(navigator.userAgent);
+const IS_PC = !IS_MOBILE;
+const renderer = new THREE.WebGLRenderer({canvas, antialias:!IS_PC,
+  powerPreference:'high-performance', alpha:false, stencil:!IS_PC});
+renderer.setPixelRatio(IS_PC ? 1 : Math.min(devicePixelRatio,2));
+if(IS_PC){
+  // 물체/태양광이 고정된 장면이므로, 매 프레임 동일한 그림자 맵을 재계산하지 않습니다.
+  renderer.shadowMap.autoUpdate=false;
+}
 renderer.toneMapping = THREE.NeutralToneMapping; // Khronos PBR Neutral: 기본색(base color)을 왜곡 없이 재현
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -189,15 +199,20 @@ controls.enableDamping=true; controls.dampingFactor=.08; controls.minDistance=.8
 controls.maxPolarAngle=Math.PI*.495;controls.enablePan=false;controls.minDistance=1; controls.autoRotateSpeed=.7;
 const pmrem = new THREE.PMREMGenerator(renderer);
 /* MSAA 렌더 → 네온 번짐(블룸) → 톤매핑/sRGB */
-const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4}));
+// PC: 안티앨리어싱과 후처리 버퍼를 GPU에서 처리하되 메모리 대역폭을 절약합니다.
+// 스마트폰: 기존 4x MSAA를 유지합니다.
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1,1,
+  {type:THREE.HalfFloatType,samples:IS_PC?2:4}));
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(256,256), .2, .42, .95);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
-const maxAniso = renderer.capabilities.getMaxAnisotropy();
+const maxAniso = IS_PC ? Math.min(4,renderer.capabilities.getMaxAnisotropy()) : renderer.capabilities.getMaxAnisotropy();
 
 /* ───────── 맵 생성 유틸 (한 면 = 60 mm 레이아웃) ───────── */
-const S = 768;
+// PC의 다중 PBR 맵: 768² -> 640² (텍스처 픽셀 약 31% 감소).
+// 휴대폰은 기존 768² 세부 질감 그대로 유지.
+const S = IS_PC ? 640 : 768;
 let seed = 11;
 const rnd=()=>(seed=(seed*16807)%2147483647,(seed-1)/2147483646);
 const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
@@ -461,7 +476,7 @@ const floorMat=new THREE.MeshStandardMaterial({color:'#8d8b86',roughness:.92,met
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(16,16),floorMat);floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
 const key=new THREE.RectAreaLight('#e6eeff',6,.22,3.2);scene.add(key);
 const sun=new THREE.SpotLight('#ffffff',30,0,.55,.9,2);sun.position.set(2.2,5.2,2.4);sun.castShadow=true;
-sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0004;sun.shadow.normalBias=.02;sun.shadow.camera.near=2;sun.shadow.camera.far=12;scene.add(sun);scene.add(sun.target);
+sun.shadow.mapSize.set(IS_PC?1024:2048,IS_PC?1024:2048);sun.shadow.bias=-.0004;sun.shadow.normalBias=.02;sun.shadow.camera.near=2;sun.shadow.camera.far=12;scene.add(sun);scene.add(sun.target);
 
 /* ───────── 시편 ───────── */
 let RAD=.04;const geoCache={};
@@ -476,6 +491,7 @@ function planarUV(gm,size){
     uv[j]=u;uv[j+1]=v;}
   gm.attributes.uv.needsUpdate=true;return gm;
 }
+const updateStaticShadows=()=>{if(IS_PC)renderer.shadowMap.needsUpdate=true;};
 const geo=(r,gap)=>{const k=(gap?'i'+gap:'o')+r.toFixed(3);
   if(geoCache[k])return geoCache[k];
   const d=(gap||0)*MM,sz=1-2*d; // 내부 인쇄·증착층: 사양 두께만큼 안쪽으로 평행 오프셋
@@ -487,6 +503,7 @@ function buildSpecimen(def,idx){
   let inner=null;if(m.inner){inner=new THREE.Mesh(geo(RAD,def.gap),m.inner);gp.add(inner);}
   gp.position.y=.5;scene.add(gp);
   specimens.push({def,g:gp,outer,inner,mats:[m.outer,m.inner].filter(Boolean)});
+  updateStaticShadows();
 }
 function applyTune(){
   for(const s of specimens)for(const m of s.mats){
@@ -496,7 +513,7 @@ function applyTune(){
   key.intensity=keyBase*tune.env;
   bloom.strength=Math.min(1.2,tune.glow);bloom.enabled=tune.glow>0.001;
 }
-const applyRadius=()=>specimens.forEach(s=>{s.outer.geometry=geo(RAD);if(s.inner)s.inner.geometry=geo(RAD,s.def.gap);});
+const applyRadius=()=>{specimens.forEach(s=>{s.outer.geometry=geo(RAD);if(s.inner)s.inner.geometry=geo(RAD,s.def.gap);});updateStaticShadows();};
 
 /* ───────── 모드 / 배치 / 시점 ───────── */
 let mode='single',sel=0;
@@ -510,6 +527,8 @@ function layout(){
       s.g.position.set((i%cols-(cols-1)/2)*gap,.5*sc,(Math.floor(i/cols)-(rows-1)/2)*gap);}
   });
   ring.visible=mode==='grid';const s=specimens[sel];if(s){ring.position.x=s.g.position.x;ring.position.z=s.g.position.z;}
+  // 단일 소재 교체 / 8종 비교 전환 시에만 GPU 그림자 다시 생성
+  updateStaticShadows();
 }
 const VIEWS={
   oblique:{label:'사선 45°',s:[2.6,1.75,3.1],t:[0,.5,0]},
@@ -588,14 +607,55 @@ canvas.addEventListener('pointerup',e=>{if(!down||mode!=='grid')return;if(Math.h
   const h=ray.intersectObjects(specimens.map(s=>s.outer))[0];if(h)select(h.object.parent.userData.idx,true);});
 
 /* ───────── 루프 ───────── */
-function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.fov=h>w?42:32;camera.updateProjectionMatrix();}
+/* PC 깜빡임 개선(v3)
+ * 원인: v2에서는 FPS를 보고 약 4~6초 간격으로 renderer/composer/bloom 크기를
+ *       재할당하여 프레임 스톨 및 화면 번쩍임이 발생할 수 있었습니다.
+ * 해결: GPU 버퍼 크기를 첫 실행/실제 창 크기 변경 시에만 설정합니다.
+ *       휴대폰은 원본의 DPR, 프레임 루프, 후처리 설정을 그대로 사용합니다.
+ */
+const pcQuality={dpr:1,width:0,height:0,frames:0,windowStart:0,fps:0};
+function pcFixedPixelRatio(w,h){
+  // 화면 크기에 맞춰 최초 1회 픽셀 예산을 선택합니다(실행 중 FPS에 따른 재조정 없음).
+  // 1080p에서는 거의 1:1 렌더링, 고해상도 모니터에서는 GPU 부담을 방지합니다.
+  const pixelBudget=2400000;
+  return Math.max(.45,Math.min(window.devicePixelRatio||1,1.25,Math.sqrt(pixelBudget/(w*h))));
+}
+function resize(){
+  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
+  if(IS_PC){
+    const dpr=pcFixedPixelRatio(w,h);
+    // 크기가 동일한데도 브라우저에서 resize 이벤트를 중복 발생시키는 경우 방지
+    if(pcQuality.width===w && pcQuality.height===h && Math.abs(dpr-pcQuality.dpr)<.001)return;
+    pcQuality.width=w;pcQuality.height=h;pcQuality.dpr=dpr;
+    renderer.setPixelRatio(dpr);
+    composer.setPixelRatio(dpr);
+  }
+  renderer.setSize(w,h,false);
+  composer.setSize(w,h);
+  if(IS_PC){
+    // PC 블룸만 저해상도 사용. 매 프레임 setSize 호출 금지.
+    bloom.setSize(Math.max(32,Math.round(w*pcQuality.dpr*.55)),
+      Math.max(32,Math.round(h*pcQuality.dpr*.55)));
+  }
+  camera.aspect=w/h;camera.fov=h>w?42:32;camera.updateProjectionMatrix();
+}
 addEventListener('resize',()=>{resize();layout();if(mode==='grid')setView(view);});
 const clock=new THREE.Clock(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function tick(){
-  const dt=clock.getDelta();
+let lastPcFrame=0;
+function tick(now=performance.now()){
+  if(IS_PC){
+    requestAnimationFrame(tick);
+    if(document.hidden){lastPcFrame=0;clock.getDelta();return;}
+    // 60/120/144/165Hz 모니터 각각의 rAF 경계에 맞춰 최대 약 90Hz로 렌더링.
+    // v2의 강제 60Hz 타임라인과 달리 프레임 간격을 주기적으로 흔들지 않습니다.
+    if(lastPcFrame && now-lastPcFrame<1000/90-.5)return;
+    lastPcFrame=now;
+  }
+  const dt=IS_PC?Math.min(.1,clock.getDelta()):clock.getDelta();
   if(sweep&&!reduce){angle=(angle+dt*14)%360;$('sAng').value=angle;$('oAng').textContent=Math.round(angle)+'°';}
   const a=THREE.MathUtils.degToRad(angle);key.position.set(Math.cos(a)*3.2,1.9,Math.sin(a)*3.2);key.lookAt(0,.5,0);
-  controls.update();composer.render();requestAnimationFrame(tick);
+  controls.update();composer.render();
+  if(!IS_PC)requestAnimationFrame(tick);
 }
 const frame=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
 (async()=>{
